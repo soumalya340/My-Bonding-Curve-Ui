@@ -1,5 +1,6 @@
-import { PublicKey, Connection, Keypair } from "@solana/web3.js";
+import { PublicKey, Connection } from "@solana/web3.js";
 import { getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Constants - Update these with your actual values
 export const QUOTE_MINT = new PublicKey(

@@ -1,5 +1,8 @@
 "use client";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/no-unescaped-entities */
+
 import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
@@ -15,7 +18,6 @@ import {
   createAssociatedTokenAccountInstruction,
   AuthorityType,
   TOKEN_PROGRAM_ID,
-  NATIVE_MINT,
   createInitializeMintInstruction,
   MINT_SIZE,
 } from "@solana/spl-token";
@@ -28,9 +30,6 @@ const QUOTE_MINT = new PublicKey("So11111111111111111111111111111111111111112");
 const BP_FEE_KEY_PUBKEY = new PublicKey(
   "7Z4GK4ouyzkqDcZU44FNBAGLfQTKkp6fwCUuzQcTKtJW"
 );
-const PROGRAM_ID = new PublicKey(
-  "BzUWmCR33ez1LvDfF2K9USe3Ra1Ws47WQ2ETCzebBkS6"
-);
 
 export default function PoolCreator() {
   const { publicKey, sendTransaction, signTransaction, signAllTransactions } =
@@ -42,6 +41,7 @@ export default function PoolCreator() {
     type: "loading" | "success" | "error" | null;
   }>({ message: "", type: null });
   const [isCreating, setIsCreating] = useState(false);
+  const [txSig, setTxSig] = useState<string | null>(null);
 
   const showStatus = (
     message: string,
@@ -181,7 +181,6 @@ export default function PoolCreator() {
         accountsToCheck.map((acc) => acc.address)
       );
 
-      // Explicit typing to avoid implicit 'any[]' error
       const atasToCreate: {
         address: PublicKey;
         mint: PublicKey;
@@ -303,6 +302,7 @@ export default function PoolCreator() {
         `🎉 INCREDIBLE! Entire pool created in 1 transaction! Only 1 confirmation!`,
         "success"
       );
+      setTxSig(signature);
 
       console.log("🚀 ULTIMATE SUCCESS! Single transaction:", signature);
       console.log("📍 Pool PDA:", poolPda.toString());
@@ -430,6 +430,20 @@ export default function PoolCreator() {
             </div>
             <div className="font-semibold">{status.message}</div>
           </div>
+        </div>
+      )}
+
+      {/* Solscan link */}
+      {txSig && (
+        <div className="mt-4 text-center">
+          <a
+            href={`https://solscan.io/tx/${txSig}?cluster=devnet`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 underline font-mono break-all"
+          >
+            View transaction on Solscan
+          </a>
         </div>
       )}
 
